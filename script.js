@@ -1,26 +1,30 @@
 const text = "This text types out continuously...";
 const target = document.getElementById("typed-text");
 
-let i = 0;
+let index = 0;
+let deleting = false;
 
-function typeLoop() {
+function loop() {
+  if (!deleting) {
+    target.textContent = text.substring(0, index);
+    index++;
 
-  target.textContent = "";
+    if (index > text.length) {
+      deleting = true;
+      setTimeout(loop, 1500);
+      return;
+    }
+  } else {
+    target.textContent = text.substring(0, index);
+    index--;
 
-  function type() {
-    if (i < text.length) {
-      target.textContent += text.charAt(i);
-      i++;
-      setTimeout(type, 70);
-    } else {
-      setTimeout(() => {
-        i = 0;
-        typeLoop();
-      }, 2000);
+    if (index < 0) {
+      deleting = false;
+      index = 0;
     }
   }
 
-  type();
+  setTimeout(loop, deleting ? 40 : 80);
 }
 
-typeLoop();
+loop();
